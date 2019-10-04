@@ -1,4 +1,4 @@
-import sys, paramiko, json, vm
+import sys, paramiko, json, vm, onboarding
 
 tenant_name=sys.argv[1]
 

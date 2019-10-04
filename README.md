@@ -5,3 +5,21 @@ ISO Used: https://mirror.umd.edu/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-19
 
 Packages in ISO: Collectd, DHCP
 
+* Update the list of Hypervisors in JSON file
+* Generate SSH keys of manager node and add SSH Keys into all Hypervisors
+* Find the best hypervisor and create management network
+* Create namespaces, bridges, veth pairs, and VxLANs
+* Create Controller node in the best hypervisor
+* Create DHCP file and Collectd server file
+
+* Configure DHCP and Collectd in server
+
+* Create application VMs and update the running JSON file
+* Reboot the VMs to change the hostname
+
+* Push collectd files into all VMs
+
+* Collect all the ip addresses of VMs and Create IP tables
+* Push iptables into the best hypervisor namespace
+
+* Scale up/down logic

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+/sbin/ip netns del nokia
+/sbin/ip link set nokia-dns-br down
+/sbin/ip link set nokia-dhcp-br down
+/sbin/ip link set nokia-mgmt-br down
+brctl delbr nokia-dns-br
+brctl delbr nokia-dhcp-br
+brctl delbr nokia-mgmt-br
+virsh destroy nokia-dns-0
+virsh destroy nokia-dns-1
+virsh destroy nokia-dns-2
+virsh destroy nokia-dhcp-0
+virsh destroy nokia-dhcp-1
+virsh destroy nokia-mgmt-controller
+virsh undefine nokia-dns-0
+virsh undefine nokia-dns-1
+virsh undefine nokia-dns-2
+virsh undefine nokia-dhcp-0
+virsh undefine nokia-dhcp-1
+virsh undefine nokia-mgmt-controller
+rm -f /home/PK/ASS/etc/nokia/nokia-dhcp-0*
+rm -f /home/PK/ASS/etc/nokia/nokia-dhcp-1*
+rm -f /home/PK/ASS/etc/nokia/nokia-dns-0*
+rm -f /home/PK/ASS/etc/nokia/nokia-dns-1*
+rm -f /home/PK/ASS/etc/nokia/nokia-dns-2*
+rm -f /home/PK/ASS/etc/nokia/nokia-mgmt-controller*
+rm -f /home/PK/ASS/etc/nokia/nokia-mgmt-network.xml
+> /home/PK/ASS/etc/nokia/inter.conf
+> /home/PK/ASS/etc/nokia/detail.conf
+> /home/PK/ASS/etc/nokia/run.json
+> /home/PK/ASS/etc/nokia/dns
+> /home/PK/ASS/etc/nokia/dhcp
+cp /home/PK/ASS/etc/nokia/dhcpd.conf.1 /home/PK/ASS/etc/nokia/dhcpd.conf
+virsh net-destroy nokia-mgmt
+virsh net-undefine nokia-mgmt
