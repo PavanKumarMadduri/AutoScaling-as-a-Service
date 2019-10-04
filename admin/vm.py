@@ -1,5 +1,7 @@
 from __future__ import print_function
-import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvirt
+import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvirt, datetime
+
+running={}
 
 def vm_start(tenant_name,net,cpy_ip,count,ssh):
 ###############Definfing & starting a VM#################
@@ -19,10 +21,14 @@ def vm_start(tenant_name,net,cpy_ip,count,ssh):
 		exit(1)
 	print('Guest '+dom.name()+' has booted', file=sys.stderr)
 	ssh.exec_command('virsh dumpxml '+tenant_name+'-'+net["Name"]+'-'+str(count)+' > /home/vpmaddur/Project/'+tenant_name+'/etc/'+tenant_name+'-'+net["Name"]+'-'+str(count)+'.xml')
-	conn.close()
+        running[net["Name"]]=[count, str(datetime.datetime.now())]
+        conn.close()
+
+        with open('/home/vpmaddur/Project/'+tenant_name+'/current.json', 'w') as outfile:
+                json.dump(running, outfile)
 
 def vm_create(tenant_name, net, vm, network,bst_hyp):
-	tree = ET.parse('/home/vpmaddur/Project/'tenant_name+'/'+tenant_name+'-vm.xml')
+	tree = ET.parse('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'-vm.xml')
 	root = tree.getroot()
 #######Changing VM Name###########
 	vm_name=root.find('name')

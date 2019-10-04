@@ -1,14 +1,15 @@
-import paramiko, json, sys, subprocess, vm
+import paramiko, json, sys, subprocess, vm, mgmtnw
 
 tenant_name=sys.argv[1]
 with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
     tenant_hyper_list=json.load(hypervisor_list)
 ###########Finding the Hypervisor with high free memory########################
-def best_hypervisor():
+def best_hypervisor(tenant_hyperlist):
 #	with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
 #		tenant_hyper_list=json.load(hypervisor_list)
 	free_memory=0
-	for ip in tenant_hyper_list[0]["ip_list"]:
+	for ip in tenant_hyperlist[0]["ip_list"]:
+                print(ip)
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(ip, port=22, username='root',  key_filename='/root/.ssh/id_rsa')
@@ -21,21 +22,24 @@ def best_hypervisor():
 	return ip
 
 ###################Creating Management Network################################
-bst_hyp=best_hypervisor()
+with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
+            tenant_input=json.load(json_input)
+
+bst_hyp=best_hypervisor(tenant_hyper_list)
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect(bst_hyp, port=22, username='root' , key_filename='/root/.ssh/id_rsa')
 m_network=tenant_input[0]["Networks"][-1]["Subnet"]
 m_netmask=tenant_input[0]["Networks"][-1]["netmask"]
-mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_subnet)
+mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_network)
 
 
 ######################### Create Infrastrcuture in all Hypervisors#################
 #with open('/home/admin/'+tenant_name+'/'+tenant_name+'-hypervisor.json') as hypervisor_list:
 #	tenant_hyper_list=json.load(hypervisor_list)
 
-with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
-	tenant_input=json.load(json_input)
+#with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
+#	tenant_input=json.load(json_input)
 
 for ip in tenant_hyper_list[0]["ip_list"]:
         print(ip)

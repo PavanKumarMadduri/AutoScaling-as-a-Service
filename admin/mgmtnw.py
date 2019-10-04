@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvir
+import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvirt
 
 def mgmt_network(nw_netmask, ip, tenant_name, nw_subnet):
     conn = libvirt.open('qemu+ssh://root@'+ip+'/system?keyfile=/root/.ssh/id_rsa')
@@ -18,13 +18,13 @@ def mgmt_network(nw_netmask, ip, tenant_name, nw_subnet):
     nwroot.remove(macaddr)
     ipa=nwroot.find('ip')
     nw1 = nw_subnet.split(".")
-    nw_subnet = ".".join(nw1[0:3])
-    ipa.attrib['address']=nw_subnet+str(.1)
+    nw_subnet = ".".join(nw1[0:2])
+    ipa.attrib['address']=nw_subnet+".1"
     ipa.attrib['netmask']=str(nw_netmask)
     dhc=ipa.find('dhcp')
     rang=dhc.find('range')
-    rang.attrib['start']=nw_subnet+str(.2)
-    rang.attrib['end']=nw_subnet+str(.254)
+    rang.attrib['start']=nw_subnet+".2"
+    rang.attrib['end']=nw_subnet+".254"
     nwtree.write('/home/vpmaddur/Project/'+tenant_name+'/etc/mgmt-network.xml')
     nwconfig=open('/home/vpmaddur/Project/'+tenant_name+'/etc/mgmt-network.xml', 'r')
     nwxml=nwconfig.read()
