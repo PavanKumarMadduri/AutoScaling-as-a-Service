@@ -1,31 +1,40 @@
-import paramiko, json, sys, subprocess, vm, mgmtnw
+import paramiko, json, sys, subprocess, vm, mgmtnw, variables, besthypervisor
 
 tenant_name=sys.argv[1]
+
 with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
-    tenant_hyper_list=json.load(hypervisor_list)
+        tenant_hyper_list=json.load(hypervisor_list)
+
+with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
+    tenant_input=json.load(json_input)
+
+
+
+#with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
+#    tenant_hyper_list=json.load(hypervisor_list)
 ###########Finding the Hypervisor with high free memory########################
-def best_hypervisor(tenant_hyperlist):
+#def best_hypervisor():
 #	with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
 #		tenant_hyper_list=json.load(hypervisor_list)
-	free_memory=0
-	for ip in tenant_hyperlist[0]["ip_list"]:
-                print(ip)
-		ssh = paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(ip, port=22, username='root',  key_filename='/root/.ssh/id_rsa')
-		stdin, stdout, stderr = ssh.exec_command('cat /proc/meminfo  | grep MemFree | awk \'{print $2}\'')
-		hypervisor_memory=int(stdout.readlines()[0].strip())
-		ssh.close()
-		if hypervisor_memory > free_memory:
-			free_memory=hypervisor_memory
-			free_hyp=ip
-	return ip
+#	free_memory=0
+#	for ip in variables.tenant_hyper_list[0]["ip_list"]:
+#                print(ip)
+#		ssh = paramiko.SSHClient()
+#		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+#		ssh.connect(ip, port=22, username='root',  key_filename='/root/.ssh/id_rsa')
+#		stdin, stdout, stderr = ssh.exec_command('cat /proc/meminfo  | grep MemFree | awk \'{print $2}\'')
+#		hypervisor_memory=int(stdout.readlines()[0].strip())
+#		ssh.close()
+#		if hypervisor_memory > free_memory:
+#			free_memory=hypervisor_memory
+#			free_hyp=ip
+#	return ip
 
 ###################Creating Management Network################################
-with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
-            tenant_input=json.load(json_input)
+#with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
+#            tenant_input=json.load(json_input)
 
-bst_hyp=best_hypervisor(tenant_hyper_list)
+bst_hyp=besthypervisor.best_hypervisor()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect(bst_hyp, port=22, username='root' , key_filename='/root/.ssh/id_rsa')
@@ -41,7 +50,7 @@ mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_network)
 #with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
 #	tenant_input=json.load(json_input)
 
-for ip in tenant_hyper_list[0]["ip_list"]:
+for ip in variables.tenant_hyper_list[0]["ip_list"]:
         print(ip)
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

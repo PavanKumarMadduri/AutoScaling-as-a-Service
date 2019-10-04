@@ -18,7 +18,7 @@ def mgmt_network(nw_netmask, ip, tenant_name, nw_subnet):
     nwroot.remove(macaddr)
     ipa=nwroot.find('ip')
     nw1 = nw_subnet.split(".")
-    nw_subnet = ".".join(nw1[0:2])
+    nw_subnet = ".".join(nw1[0:3])
     ipa.attrib['address']=nw_subnet+".1"
     ipa.attrib['netmask']=str(nw_netmask)
     dhc=ipa.find('dhcp')
