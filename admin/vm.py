@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvirt, datetime
+import os, sys,xml.etree.ElementTree as ET, paramiko, subprocess,libvirt, datetime,json
 
 running={}
 
@@ -21,7 +21,7 @@ def vm_start(tenant_name,net,cpy_ip,count,ssh):
 		exit(1)
 	print('Guest '+dom.name()+' has booted', file=sys.stderr)
 	ssh.exec_command('virsh dumpxml '+tenant_name+'-'+net["Name"]+'-'+str(count)+' > /home/vpmaddur/Project/'+tenant_name+'/etc/'+tenant_name+'-'+net["Name"]+'-'+str(count)+'.xml')
-        running[net["Name"]]=[count, str(datetime.datetime.now())]
+        running[net["Name"]]=[count+1, str(datetime.datetime.now())]
         conn.close()
 
         with open('/home/vpmaddur/Project/'+tenant_name+'/current.json', 'w') as outfile:

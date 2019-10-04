@@ -1,11 +1,11 @@
 import sys, paramiko, json, vm
 
+tenant_name=sys.argv[1]
+
 with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
     tenant_input=json.load(json_input)
 
-
 network=tenant_input[0]["Networks"]
-tenant_name=tenant_input[0]["Name"]
 print(network)
 with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
     tenant_hyper_list=json.load(hypervisor_list)
