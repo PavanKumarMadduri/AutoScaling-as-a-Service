@@ -1,0 +1,36 @@
+[
+{
+	"Name": "Nokia",
+	"Networks": [
+		{
+			"Name": "dns",
+			"Subnet": "192.168.10.0",
+			"netmask": "255.255.255.0",
+			"vcpu": 2,
+			"memory(in KB)": 2097152,
+			"Min": 2,
+			"Max": 6,
+			"Cooling off(in seconds)":900,
+			"Current Count":0
+		},
+		{
+			"Name": "dhcp",
+			"Subnet": "192.168.20.0",
+			"netmask": "255.255.255.0",
+            		"vcpu": 2,
+            		"memory(in KB)": 2097152,
+			"Min": 1,
+			"Max": 4,
+			"Current Count":0,
+			"Cooling off(in seconds)":900
+	        },
+	        {
+        	       "Name": "mgmt",
+	               "Subnet": "192.168.30.0",
+                       "netmask": "255.255.255.0",
+                       "vcpu": 2,
+                       "memory(in KB)": 2097152
+	        }
+	]
+}
+]

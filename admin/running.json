@@ -1,0 +1,48 @@
+[
+{
+	"hip": "192.168.122.129",
+	"network": [
+		{
+			"dns": [
+				{
+					"name": "nokia-dns-0",
+					"mgmt_ip": "192.168.30.4",
+					"data_ip": "192.168.20.4",
+					"running since":"27-10-2018 9:40"
+				},
+				{
+                                        "name": "nokia-dns-1",
+                                        "mgmt_ip": "192.168.30.5",
+					"data_ip": "192.168.20.5",
+                                        "running since":"27-10-2018 9:50"
+                                }
+				]
+		},
+                {
+                        "dhcp": [
+                                {
+                                        "name": "nokia-dhcp-0",
+                                        "mgmt_ip": "192.168.30.6",
+					"data_ip": "192.168.20.3",
+                                        "running since":"27-10-2018 9:40"
+                                },
+                                {
+                                        "name": "nokia-dhcp-1",
+                                        "mgmt_ip": "192.168.30.7",
+                                        "data_ip": "192.168.20.4",
+                                        "running since":"27-10-2018 9:50"
+                                }
+                                ]
+                },
+                {
+                        "mgmt": [
+                                {
+                                        "name": "nokia-mgmt-controller",
+                                        "mgmt_ip": "192.168.30.2",
+                                        "running since":"27-10-2018 9:40"
+                                }
+                                ]
+                }
+	]
+}
+]		
