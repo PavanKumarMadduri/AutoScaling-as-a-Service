@@ -8,13 +8,6 @@ with open('/home/vpmaddur/Project/'+tenant_name+'/hypervisor.json') as hyperviso
 with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
     tenant_input=json.load(json_input)
 
-####################Creating Management Network###################
-
-bst_hyp=besthypervisor.best_hypervisor(tenant_name)
-m_network=tenant_input[0]["Networks"][-1]["Subnet"]
-m_netmask=tenant_input[0]["Networks"][-1]["netmask"]
-mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_network)
-
 ######################### Create Infrastrcuture in all Hypervisors#################
 
 for ip in tenant_hyper_list[0]["ip_list"]:
@@ -48,11 +41,14 @@ for ip in tenant_hyper_list[0]["ip_list"]:
             if vxlan_ip!=ip:
                 ssh.exec_command('bridge fdb append to 00:00:00:00:00:00 dst '+vxlan_ip+' dev '+net["Name"]+'-vx')
                 vxlan+=1
-                if net == "mgmt":
-                    ssh.exec_command('ip link add '+net["Name"]+'-dhcp type veth peer name dhcp-'+net["Name"]+'-'+tenant_name)
-                    ssh.exec_command('ip link set dhcp-'+net["Name"]+'-'+tenant_name+' up')
-                    ssh.exec_command('ip link set '+net["Name"]+'-dhcp'+' up')
-                    ssh.exec_command('brctl addif '+tenant_name+"-"+net["Name"]+'-br'+' '+net["Name"]+'-dhcp')
-                    ssh.exec_command('brctl addif '+tenant_name+"-"+'-dhcp-mgmt'+' dhcp-'+net["Name"]+'-'+tenant_name)
     ssh.close()
-    controller.create_controller(tenant_name)
+
+
+####################Creating Management Network###################
+
+bst_hyp=besthypervisor.best_hypervisor(tenant_name)
+m_network=tenant_input[0]["Networks"][-1]["Subnet"]
+m_netmask=tenant_input[0]["Networks"][-1]["netmask"]
+mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_network)
+
+controller.create_controller(tenant_name)
