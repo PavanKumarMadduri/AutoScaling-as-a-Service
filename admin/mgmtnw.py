@@ -10,8 +10,8 @@ def mgmt_network(nw_netmask, ip, tenant_name, nw_subnet):
     nwroot=nwtree.getroot()
     nw_name=nwroot.find('name')
     nw_name.text=tenant_name+"-dhcp-mgmt"
-    id=nwroot.find('uuid')
-    nwroot.remove(id)
+    id1=nwroot.find('uuid')
+    nwroot.remove(id1)
     br_name=nwroot.find('bridge')
     br_name.attrib['name']=nw_name.text
     macaddr=nwroot.find('mac')
@@ -29,9 +29,10 @@ def mgmt_network(nw_netmask, ip, tenant_name, nw_subnet):
     nwconfig=open('/home/vpmaddur/Project/'+tenant_name+'/etc/mgmt-network.xml', 'r')
     nwxml=nwconfig.read()
 ###############Create a persistent virtual network#################
-    network = conn.networkCreateXML(nwxml)
+    network = conn.networkDefineXML(nwxml)
     if network == None:
         print('Failed to create a virtual network', file=sys.stderr)
         exit(1)
+    network.create()
     nwconfig.close()
     conn.close()

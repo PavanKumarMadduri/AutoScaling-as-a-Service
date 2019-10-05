@@ -1,12 +1,12 @@
-import  sys, paramiko, onboarding, logging
+import  sys, paramiko, json
 
-def best_hypervisor():
+
+def best_hypervisor(tenant_name):
     free_memory=0
-    for ip in onboarding.tenant_hyper_list[0]["ip_list"]:
+    with open('/home/vpmaddur/Project/'+tenant_name+'/hypervisor.json') as hypervisor_list:
+        tenant_hyper_list=json.load(hypervisor_list)
+    for ip in tenant_hyper_list[0]["ip_list"]:
         print(ip)
-        logging.basicConfig()
-        logging.getLogger("paramiko").setLevel(logging.WARNING)
-        paramiko.util.log_to_file("./paramiko.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip, port=22, username='root',  key_filename='/root/.ssh/id_rsa')
@@ -18,4 +18,4 @@ def best_hypervisor():
             free_memory=hypervisor_memory
             free_hyp=ip
     print(ip)
-    return ip
+    return free_hyp

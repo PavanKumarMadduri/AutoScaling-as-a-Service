@@ -1,46 +1,23 @@
-import paramiko, json, sys, subprocess, vm, mgmtnw, variables, besthypervisor, logging
+import paramiko, json, sys, vm, mgmtnw, besthypervisor, controller
 
 tenant_name=sys.argv[1]
 
-with open('/home/vpmaddur/Project/admin/'+tenant_name+'-hypervisor.json') as hypervisor_list:
+with open('/home/vpmaddur/Project/'+tenant_name+'/hypervisor.json') as hypervisor_list:
     tenant_hyper_list=json.load(hypervisor_list)
 
 with open('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'.json') as json_input:
     tenant_input=json.load(json_input)
 
-##############################################################
-
-def best_hypervisor():
-    free_memory=0
-    for ip in tenant_hyper_list[0]["ip_list"]:
-        print(ip)
-        logging.basicConfig()
-        logging.getLogger("paramiko").setLevel(logging.WARNING)
-        paramiko.util.log_to_file("./paramiko.log")
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, port=22, username='root',  key_filename='/root/.ssh/id_rsa')
-        print(ip)
-        stdin, stdout, stderr = ssh.exec_command('cat /proc/meminfo  | grep MemFree | awk \'{print $2}\'')
-        hypervisor_memory=int(stdout.readlines()[0].strip())
-        ssh.close()
-        if hypervisor_memory > free_memory:
-            free_memory=hypervisor_memory
-            free_hyp=ip
-        print(ip)
-    return ip
-
 ####################Creating Management Network###################
 
-bst_hyp=best_hypervisor()
+bst_hyp=besthypervisor.best_hypervisor(tenant_name)
 m_network=tenant_input[0]["Networks"][-1]["Subnet"]
 m_netmask=tenant_input[0]["Networks"][-1]["netmask"]
 mgmtnw.mgmt_network(m_netmask, bst_hyp, tenant_name, m_network)
 
-
 ######################### Create Infrastrcuture in all Hypervisors#################
 
-for ip in variables.tenant_hyper_list[0]["ip_list"]:
+for ip in tenant_hyper_list[0]["ip_list"]:
     print(ip)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -78,3 +55,4 @@ for ip in variables.tenant_hyper_list[0]["ip_list"]:
                     ssh.exec_command('brctl addif '+tenant_name+"-"+net["Name"]+'-br'+' '+net["Name"]+'-dhcp')
                     ssh.exec_command('brctl addif '+tenant_name+"-"+'-dhcp-mgmt'+' dhcp-'+net["Name"]+'-'+tenant_name)
     ssh.close()
+    controller.create_controller(tenant_name)

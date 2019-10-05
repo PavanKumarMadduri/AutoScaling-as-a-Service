@@ -27,7 +27,7 @@ def vm_start(tenant_name,net,cpy_ip,count,ssh):
         json.dump(running, outfile)
 
 def vm_create(tenant_name, net, vm, network,bst_hyp):
-    tree = ET.parse('/home/vpmaddur/Project/'+tenant_name+'/'+tenant_name+'-vm.xml')
+    tree = ET.parse('/home/vpmaddur/Project/'+tenant_name+'/vm.xml')
     root = tree.getroot()
 #######Changing VM Name###########
     vm_name=root.find('name')
